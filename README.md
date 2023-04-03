@@ -628,7 +628,7 @@ plugins: [
     new HtmlWebpackPlugin({
         title: "WebGLWebpackTutorial",
         filename: "index.html",
-        template: "src/template.html"
+        template: "src/index.html"
     })
 ],
 ```
@@ -687,7 +687,8 @@ module.exports = {
 </html>
 ```
 
-4. Run `npx webpack` to build your project and open up the `index.html` file in the `dist` folder. Everything should appear normally and your script should still load despite not having a single `<script>` tag in your HTML template file.
+4. Move your `index.html` file from the `dist` folder to the `src` folder.
+4. Run `npx webpack` to build your project and open up the newly generated `index.html` file in the `dist` folder. Everything should appear normally and your script should still load despite not having a single `<script>` tag in your HTML template file.
 
 ### Build Scripts (Development vs Production)
 
