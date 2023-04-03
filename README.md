@@ -2,14 +2,34 @@
 
 ![A stupid chad meme to describe this project](./images/thumbnail.png)
 
+### Table of Contents
+
+- [Quick Start](#quick-start)
+- [The Problem](#the-problem)
+- [The Solution](#the-solution)
+  - [What is Webpack?](#what-is-webpack)
+- [Getting Started](#getting-started)
+  - [Hello, World!](#hello-world)
+  - [Installing Node.js](#installing-nodejs)
+  - [Setting Up Webpack](#setting-up-webpack)
+- [Loading Static Assets with Webpack](#loading-static-assets-with-webpack)
+  - [Installing Loaders](#installing-loaders)
+  - [Using Loaders](#using-loaders)
+- [Extras (Recommended)](#extras-recommended)
+  - [HTML Templates](#html-templates)
+  - [Build Scripts (Development vs Production)](#build-scripts-development-vs-production)
+  - [Hot Reloading](#hot-reloading)
+  - [TypeScript](#typescript)
+  - [Source Maps](#source-maps)
+
 ## Quick Start
 
 1. Clone the repo and extract the example project from the `complete` folder. This includes a basic Webpack/WebGL program with support for Node build scripts, an HTML template file, hot reloading, TypeScript, and source maps.
 2. Install Node.js if you haven't already (and if you do have to install it, make sure to restart your PC afterwards).
 3. Navigate to the root directory of the project in the shell/terminal/command line.
-3. Initialize the project by running `npm init -y`.
+3. Initialize the project by running `npm install`.
 4. Test the project in development by running `npm run serve`. This will support hot reloading.
-5. Build the project by running `npm run build`. To distribute your project after building it, just zip up the `dist`.
+5. Build the project by running `npm run build`. To distribute your project after building it, just zip up the `dist` folder.
 
 ## The Problem
 
