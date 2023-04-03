@@ -1,5 +1,7 @@
 # Completely Standalone Web Apps with Webpack
 
+![A stupid chad meme to describe this project](./images/thumbnail.png)
+
 ## Quick Start
 
 1. Clone the repo and extract the example project from the `complete` folder. This includes a basic Webpack/WebGL program with support for Node build scripts, an HTML template file, hot reloading, TypeScript, and source maps.
