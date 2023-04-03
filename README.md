@@ -15,6 +15,7 @@
 - [Loading Static Assets with Webpack](#loading-static-assets-with-webpack)
   - [Installing Loaders](#installing-loaders)
   - [Using Loaders](#using-loaders)
+  - [Another Example](#another-example)
 - [Extras (Recommended)](#extras-recommended)
   - [HTML Templates](#html-templates)
   - [Build Scripts (Development vs Production)](#build-scripts-development-vs-production)
@@ -423,6 +424,183 @@ Rebuild the project and reopen your `index.html` file, and you should see the fo
 ![A red triangle drawn on a WebGL canvas](./images/webgl_basic_drawing.png)
 
 The output isn't very impressive and our WebGL program leaves a lot to be desired, but it's an effective and simple example of the power of Webpack. If you want more impressive results, you could try importing [Wavefront .obj files](https://en.wikipedia.org/wiki/Wavefront_.obj_file) using a loader such as the one found at https://github.com/frenchtoast747/webgl-obj-loader.
+
+### Another Example
+
+Since I made such a big deal at the beginning of this tutorial about the separation of data and code, let's fix a part of our project that blatantly violates this principle. In particular, our vertex shader holds a static array of vertices that we should probably store in a separate file.
+
+Change `vertex.glsl` and `fragment.glsl` to have the following contents respectively:
+
+```
+#version 300 es
+// vertex.glsl
+
+layout(location = 0) in vec4 a_position;
+layout(location = 1) in vec4 a_color;
+
+out vec4 color;
+
+void main(void)
+{
+    gl_Position = a_position;
+    color = a_color;
+}
+```
+
+```
+#version 300 es
+// fragment.glsl
+
+precision highp float;
+
+in vec4 color;
+out vec4 FragColor;
+
+void main(void)
+{
+    FragColor = color;
+}
+```
+
+Now, we must create a file that stores the description of the triangle we want to render. In your root directory, create a new folder called `assets` and underneath this folder, create a new file called `triangle.json` and paste in the following contents:
+
+```
+{
+    "vertices": [
+         0.25, -0.25, 0.5, 1.0,
+        -0.25, -0.25, 0.5, 1.0,
+         0.25,  0.25, 0.5, 1.0
+    ],
+    "colors": [
+        1.0, 0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 1.0
+    ]
+}
+```
+
+Now, we need to load the triangle into our `main.js` file. Webpack is capable of loading JSON files by default, so we don't need to install an additional loader. Add the following lines to the beginning of the main method of your `main.js` file:
+
+```
+// Load the triangle
+let triangle = require("../assets/triangle.json");
+```
+
+The built-in JSON loader maps the JSON object to a POJO (plain-old JavaScript object), meaning we can call `triangle.vertices` or `triangle.colors` in our JavaScript to get the triangle's vertices and colors respectively. You can verify this works by printing out the contents of these properties or by setting a breakpoint and inspecting the value, but I'm going to assume it's loading correctly.
+
+We also have to change our code to use the vertices and colors of the triangle in our shader, which requires some additional setup of WebGL. Add a new method to `main.js` with the following contents:
+
+```
+function createBuffer(gl, data) {
+    let buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    return buffer;
+}
+```
+
+This method includes boilerplate code to create a WebGL buffer. We still need to enable the attributes in the shaders, call the method to create the buffers with our triangle data, and send the data to the shaders. We must do this in the main method, after we load our triangle and enable our shader program. Add the following lines to your `main.js` file:
+
+```
+// Enable the attributes
+gl.enableVertexAttribArray(0);
+gl.enableVertexAttribArray(1);
+
+// Create the buffers
+let vertexBuffer = createBuffer(gl, triangle.vertices);
+let colorBuffer = createBuffer(gl, triangle.colors);
+
+...
+
+// Send the data to the shaders
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+
+gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0);
+```
+
+The full contents of `main.js` should now look something like this:
+
+```
+// Initialize the WebGL context.
+const canvas = document.getElementById("webgl-canvas");
+const gl = canvas.getContext("webgl2");
+
+main();
+
+function createShader(gl, type, source) {
+    let shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+}
+
+function createBuffer(gl, data) {
+    let buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    return buffer;
+}
+
+/**
+ * Make sure the WebGL context has been initialized, then clear the canvas.
+ */
+function main() {
+    // Validate the rendering context.
+    if (gl === null) {
+        console.error("Unable to initialize WebGL. Your browser or machine may not support it.");
+        return;
+    }
+
+    // Load the triangle
+    let triangle = require("../assets/triangle.json");
+
+    let shaderProgram = gl.createProgram();
+
+    // Load the shaders
+    let vertexShaderSource = require("./shaders/vertex.glsl");
+    let fragmentShaderSource = require("./shaders/fragment.glsl");
+
+    // Create the shaders
+    let vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    let fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+    // Link the shaders
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+
+    gl.useProgram(shaderProgram);
+
+    // Enable the attributes
+    gl.enableVertexAttribArray(0);
+    gl.enableVertexAttribArray(1);
+
+    // Create the buffers
+    let vertexBuffer = createBuffer(gl, triangle.vertices);
+    let colorBuffer = createBuffer(gl, triangle.colors);
+
+    // Clear the canvas.
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Send the data to the shaders
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    console.log("Hello, WebGL!");
+}
+```
+
+Let's rebuild the project by running `npx webpack` on the command line. Open up your `index.html` file and this time you should see a triangle with colors interpolated between its vertices, as seen below. Keep in mind that you need to rebuild your project every time you make changes to `triangles.json`, but that it's still helpful to have the data in its own file to keep it separate from our code.
+
+![A triangle whose colors are interpolated between its vertices](./images/interpolated_colors_triangle.png)
 
 ## Extras (Recommended)
 
