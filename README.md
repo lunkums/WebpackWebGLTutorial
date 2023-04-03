@@ -769,7 +769,7 @@ module.exports = {
 };
 ```
 
-Note that the line `open: true` will automatically open your project after you start the dev server. This is just a personal preference, and you may disable this feature but if you do you must manually navigate to `localhost:8080` in your browser to access the dev server after starting it.
+Note that the line `open: true` will automatically open your project after you start the dev server. This is just a personal preference, and you may disable this feature but if you do you must manually navigate to `localhost:8080` in your browser to access the dev server after starting it. If you want this feature enabled but it doesn't work when you specify `open: true` in `webpack.config.js`, try adding the `--open` flag to your Webpack command (i.e. `webpack serve --open --mode development`).
 
 3. Add the following lines to your `package.json` file under the `scripts` property:
 
