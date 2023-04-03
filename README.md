@@ -270,15 +270,17 @@ Now that we've set up Webpack, we can start loading static assets into our proje
 
 ```
 #version 300 es
-// fragment.glsl - from the OpenGL SuperBible Sixth Edition
-
-precision highp float;
-
-out vec4 color;
+// vertex.glsl - from the OpenGL SuperBible Sixth Edition
 
 void main(void)
 {
-    color = vec4(1.0, 0.0, 0.0, 1.0);
+    const vec4 vertices[3] = vec4[3](
+        vec4(0.25, -0.25, 0.5, 1.0),
+        vec4(-0.25, -0.25, 0.5, 1.0),
+        vec4(0.25, 0.25, 0.5, 1.0)
+    );
+
+    gl_Position = vertices[gl_VertexID];
 }
 ```
 
