@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: './src/main.ts',
   devServer: {
-    open: true,
+    open: true, // Set to false to prevent the dev server from opening up automatically
     static: './dist'
   },
   devtool: 'eval-source-map',
