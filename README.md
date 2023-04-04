@@ -924,7 +924,7 @@ module.exports = {
 
 Please note that there are other options for source maps and that these options affect your application's build time. You can find a full list of these options at https://webpack.js.org/configuration/devtool/, but I'm using `devtool: 'eval-source-map'` because it allows you to inspect the value of variables while you're stepping through code which is incredibly useful.
 
-After you set up your source map, you need to rebuild your project. Then, when you open up your `index.html` file, you can access the source map by opening up your browser's debugger and going to the `Sources` tab. You can place breakpoints and step through source maps just like you can with the original code. Also, this varies slightly between Google Chrome and Mozilla Firefox, so I've included a screenshot of where to find it in Firefox, and links to the documentation for both browser.
+After you set up your source map, you need to rebuild your project with `mode` set to `development`. Then, when you open up your `index.html` file, you can access the source map by opening up your browser's debugger and going to the `Sources` tab. You can place breakpoints and step through source maps just like you can with the original code. Also, this varies slightly between Google Chrome and Mozilla Firefox, so I've included a screenshot of where to find it in Firefox, and links to the documentation for both browser.
 
 - Debugging JavaScript in Google Chrome: https://developer.chrome.com/docs/devtools/javascript/.
 - Debugging JavaScript in Mozilla Firefox: https://firefox-source-docs.mozilla.org/devtools-user/debugger/.
