@@ -76,7 +76,7 @@ Before we load any data using Webpack, let's get a simple project up and running
 
 Create a JavaScript file called `main.js` and paste in the following contents:
 
-```
+```js
 // main.js
 
 // Initialize the WebGL context.
@@ -91,7 +91,7 @@ main();
 function main() {
     // Validate the rendering context.
     if (gl === null) {
-        console.error("Unable to initialize WebGL. Your browser or machine may not support it.");
+        bash.error("Unable to initialize WebGL. Your browser or machine may not support it.");
         return;
     }
 
@@ -99,13 +99,13 @@ function main() {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    console.log("Hello, WebGL!");
+    bash.log("Hello, WebGL!");
 }
 ```
 
 Now, we need an HTML file with a canvas to make sure the script loads. Create an HTML file called `index.html` in the same directory as your `main.js` and paste in the following contents:
 
-```
+```html
 <!-- index.html -->
 
 <!DOCTYPE html>
@@ -126,7 +126,7 @@ Now, we need an HTML file with a canvas to make sure the script loads. Create an
 
 Open up `index.html` in your web browser, and you should see the following output:
 
-![A basic WebGL canvas with the browser console displaying "Hello, WebGL!"](./images/webgl_basic_program.png)
+![A basic WebGL canvas with the browser bash displaying "Hello, WebGL!"](./images/webgl_basic_program.png)
 
 ### Installing Node.js
 
@@ -136,7 +136,7 @@ Now that we have a simple "hello, world" program, let's integrate Webpack to all
 2. While installing, keep clicking `Next` and allow for the full installation with the default settings.
 3. Restart your computer to ensure path files are updated and that Node.js is fully installed.
 4. Open up your terminal (`` ctrl + shift + ` `` in Visual Studio Code), type `npm version` and hit `Enter`. You should get an output similar to the following:
-```
+```bash
 C:\Dev\WebGLWebpackTutorial>npm version
 {
   npm: '9.5.0',
@@ -172,7 +172,7 @@ Now that we have Node.js installed, we can finally set up Webpack. You can follo
 
 1. Open up the terminal in your project's root directory.
 2. Run `npm init -y` (`y` means skip the questionnaire that npm uses to initialize your project; this is general housekeeping stuff such as project name, version, etc). You should get the following output:
-```
+```bash
 C:\Dev\WebGLWebpackTutorial>npm init -y
 Wrote to C:\Dev\WebGLWebpackTutorial\package.json:
 
@@ -190,7 +190,7 @@ Wrote to C:\Dev\WebGLWebpackTutorial\package.json:
 }
 ```
 3. Run `npm install webpack webpack-cli --save-dev` (`webpack-cli` is the tool used to run Webpack on the command line; `--save-dev` means Webpack will be installed as a dev dependency, but won't be distributed with the final build). You should get the following output or similar:
-```
+```bash
 C:\Dev\WebGLWebpackTutorial>npm install webpack webpack-cli --save-dev
 
 added 117 packages, and audited 118 packages in 8s
@@ -207,7 +207,7 @@ npm notice
 ```
 4. You can ignore most notices and warnings. The important part is that Webpack installs without any errors. If there are errors, refer to Google or Stack Overflow.
 5. Run `dir` (Windows) or `ls` (Linux/MacOS) to make sure your project directory looks something like this:
-```
+```bash
  Directory of C:\Dev\WebGLWebpackTutorial
 
 03/25/2023  08:53 PM    <DIR>          .
@@ -220,7 +220,7 @@ npm notice
 ```
 6. Create a folder called `src` at the project's root directory and place `main.js` into it. The `src` folder is where we'll place all our source code.
 7. Create a folder called `dist` at the project's' root directory and place `index.html` into it. `dist` is [short for "distributable,"](https://stackoverflow.com/questions/22842691/what-is-the-meaning-of-the-dist-directory-in-open-source-projects) so this is the folder that we'll zip up and distribute as our standalone application. Your project directory should now look like this:
-```
+```bash
  Directory of C:\Dev\WebGLWebpackTutorial
 
 03/25/2023  09:13 PM    <DIR>          .
@@ -232,7 +232,7 @@ npm notice
 03/25/2023  09:07 PM    <DIR>          src
 ```
 8. Create a file in the root directory called `webpack.config.js` and paste in the following contents:
-```
+```js
 const path = require('path');
 
 module.exports = {
@@ -245,7 +245,7 @@ module.exports = {
 ```
 9. `entry` requires a relative path, hence `./src/main.js`, while output requires an absolute file path, hence `path.resolve(__dirname, 'dist')`.
 10. Run `npx webpack`. You should get the following output:
-```
+```bash
 C:\Dev\WebGLWebpackTutorial>npx webpack
 asset main.js 257 bytes [emitted] [minimized] (name: main)
 ./src/main.js 579 bytes [built] [code generated]
@@ -259,7 +259,7 @@ webpack 5.76.3 compiled with 1 warning in 233 ms
 ```
 11. Ignore the warning, we'll fix that later. For now, open up `dist/index.html` and make sure you get the following output once again:
 
-![A basic WebGL canvas with the browser console displaying "Hello, WebGL!"](./images/webgl_basic_program.png)
+![A basic WebGL canvas with the browser bash displaying "Hello, WebGL!"](./images/webgl_basic_program.png)
 
 ## Loading Static Assets with Webpack
 
@@ -268,7 +268,7 @@ Now that we've set up Webpack, we can start loading static assets into our proje
 1. Underneath the `src` folder, create a new folder called `shaders`.
 2. Inside of the `shaders` folder, create two new files: `vertex.glsl` and `fragment.glsl` with the following contents respectively:
 
-```
+```glsl
 #version 300 es
 // vertex.glsl - from the OpenGL SuperBible Sixth Edition
 
@@ -284,7 +284,7 @@ void main(void)
 }
 ```
 
-```
+```glsl
 #version 300 es
 // fragment.glsl - from the OpenGL SuperBible Sixth Edition
 
@@ -310,10 +310,10 @@ Loaders can be used to preprocess JSON, HTML, Markdown, CSS, and many other file
 
 To configure Webpack to use this loader, follow these instructions:
 
-1. Run `npm install --save-dev webpack-glsl-loader`; read the console output to verify the package was installed correctly.
+1. Run `npm install --save-dev webpack-glsl-loader`; read the bash output to verify the package was installed correctly.
 2. Add the following lines to your `webpack.config.js` file:
 
-```
+```js
 module: {
   rules: [
     {
@@ -326,7 +326,7 @@ module: {
 
 The complete contents of `webpack.config.js` should now look something like this:
 
-```
+```js
 const path = require('path');
 
 module.exports = {
@@ -350,27 +350,27 @@ module.exports = {
 
 To use a loader to load static assets into JavaScript, you must call the `require(filePath)` method where `filePath` is the path to your static asset relative to the file you're loading it from. To load our shaders into `main.js`, we'll add the following lines to our main method after we initialize the WebGL context:
 
-```
+```js
 // Load the shaders
 let vertexShader = require("./shaders/vertex.glsl");
 let fragmentShader = require("./shaders/fragment.glsl");
 ```
 
-As stated in the `glsl-webpack-loader` documentation, the "shader is returned as a string" so to verify the loader is working, we'll simply print the contents of the shader to the console using the following lines:
+As stated in the `glsl-webpack-loader` documentation, the "shader is returned as a string" so to verify the loader is working, we'll simply print the contents of the shader to the bash using the following lines:
 
-```
+```js
 // Verify the shaders were loaded
-console.log(vertexShader);
-console.log(fragmentShader);
+bash.log(vertexShader);
+bash.log(fragmentShader);
 ```
 
-Go back to your terminal and build the project again using the `npx webpack` command. Now, reopen your `index.html` file and you should see the following output in the browser's console:
+Go back to your terminal and build the project again using the `npx webpack` command. Now, reopen your `index.html` file and you should see the following output in the browser's bash:
 
-![The console output of a basic program to load WebGL shaders](./images/shader_console_output.png)
+![The bash output of a basic program to load WebGL shaders](./images/shader_bash_output.png)
 
-It's great that the loader is working, but we should try to compile the shaders instead of just printing them out to the console. Let's edit the main function to use the shaders after loading them. The resulting code looks something like this:
+It's great that the loader is working, but we should try to compile the shaders instead of just printing them out to the bash. Let's edit the main function to use the shaders after loading them. The resulting code looks something like this:
 
-```
+```js
 // Initialize the WebGL context.
 const canvas = document.getElementById("webgl-canvas");
 const gl = canvas.getContext("webgl2");
@@ -390,7 +390,7 @@ function createShader(gl, type, source) {
 function main() {
     // Validate the rendering context.
     if (gl === null) {
-        console.error("Unable to initialize WebGL. Your browser or machine may not support it.");
+        bash.error("Unable to initialize WebGL. Your browser or machine may not support it.");
         return;
     }
 
@@ -417,7 +417,7 @@ function main() {
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    console.log("Hello, WebGL!");
+    bash.log("Hello, WebGL!");
 }
 ```
 
@@ -433,7 +433,7 @@ Since I made such a big deal at the beginning of this tutorial about the separat
 
 Change `vertex.glsl` and `fragment.glsl` to have the following contents respectively:
 
-```
+```glsl
 #version 300 es
 // vertex.glsl
 
@@ -449,7 +449,7 @@ void main(void)
 }
 ```
 
-```
+```glsl
 #version 300 es
 // fragment.glsl
 
@@ -466,7 +466,7 @@ void main(void)
 
 Now, we must create a file that stores the description of the triangle we want to render. In your root directory, create a new folder called `assets` and underneath this folder, create a new file called `triangle.json` and paste in the following contents:
 
-```
+```json
 {
     "vertices": [
          0.25, -0.25, 0.5, 1.0,
@@ -483,7 +483,7 @@ Now, we must create a file that stores the description of the triangle we want t
 
 Now, we need to load the triangle into our `main.js` file. Webpack is capable of loading JSON files by default, so we don't need to install an additional loader. Add the following lines to the beginning of the main method of your `main.js` file:
 
-```
+```js
 // Load the triangle
 let triangle = require("../assets/triangle.json");
 ```
@@ -492,7 +492,7 @@ The built-in JSON loader maps the JSON object to a POJO (plain-old JavaScript ob
 
 We also have to change our code to use the vertices and colors of the triangle in our shader, which requires some additional setup of WebGL. Add a new method to `main.js` with the following contents:
 
-```
+```js
 function createBuffer(gl, data) {
     let buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -503,7 +503,7 @@ function createBuffer(gl, data) {
 
 This method includes boilerplate code to create a WebGL buffer. We still need to enable the attributes in the shaders, call the method to create the buffers with our triangle data, and send the data to the shaders. We must do this in the main method, after we load our triangle and enable our shader program. Add the following lines to your `main.js` file:
 
-```
+```js
 // Enable the attributes
 gl.enableVertexAttribArray(0);
 gl.enableVertexAttribArray(1);
@@ -524,7 +524,7 @@ gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 0, 0);
 
 The full contents of `main.js` should now look something like this:
 
-```
+```js
 // Initialize the WebGL context.
 const canvas = document.getElementById("webgl-canvas");
 const gl = canvas.getContext("webgl2");
@@ -551,7 +551,7 @@ function createBuffer(gl, data) {
 function main() {
     // Validate the rendering context.
     if (gl === null) {
-        console.error("Unable to initialize WebGL. Your browser or machine may not support it.");
+        bash.error("Unable to initialize WebGL. Your browser or machine may not support it.");
         return;
     }
 
@@ -596,7 +596,7 @@ function main() {
 
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    console.log("Hello, WebGL!");
+    bash.log("Hello, WebGL!");
 }
 ```
 
@@ -619,7 +619,7 @@ You can learn how to add the plugin to your Webpack build at https://webpack.js.
 1. Run `npm install --save-dev html-webpack-plugin` to install the plugin.
 2. Add the following lines to your `webpack.config.js` file:
 
-```
+```js
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 ...
@@ -635,7 +635,7 @@ plugins: [
 
 The complete contents of `webpack.config.js` should now look something like:
 
-```
+```js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -665,7 +665,7 @@ module.exports = {
 
 3. Remove the `<script>` tag from your `index.html` file (the plugin will insert it automatically) and replace the title with `<%= htmlWebpackPlugin.options.title %>` (which is given by the `title` property in your `webpack.config.js`). Your `index.html` file should now look something like this:
 
-```
+```html
 <!-- index.html -->
 
 <!DOCTYPE html>
@@ -696,13 +696,13 @@ One thing that we didn't address during the setup of the basic Webpack/WebGL pro
 
 1. Add the following line to your `package.json` file underneath the `scripts` property:
 
-```
+```json
 "build": "webpack --mode production"
 ```
 
 The complete contents of `package.json` should now look something like this:
 
-```
+```json
 {
   "name": "webglwebpacktutorial",
   "version": "1.0.0",
@@ -736,7 +736,7 @@ To set up the dev server you can use the guide at https://webpack.js.org/guides/
 1. Run `npm install --save-dev webpack-dev-server`.
 2. Add the following lines to your `webpack.config.js` file:
 
-```
+```js
 devServer: {
   open: true,
   static: './dist'
@@ -745,7 +745,7 @@ devServer: {
 
 The complete contents of `webpack.config.js` should now look something like this:
 
-```
+```js
 const path = require('path');
 
 module.exports = {
@@ -773,13 +773,13 @@ Note that the line `open: true` will automatically open your project after you s
 
 3. Add the following lines to your `package.json` file under the `scripts` property:
 
-```
+```json
 "serve": "webpack serve --mode development"
 ```
 
 The complete contents of `package.json` should now look something like this:
 
-```
+```json
 {
   "name": "webglwebpacktutorial",
   "version": "1.0.0",
@@ -802,9 +802,9 @@ The complete contents of `package.json` should now look something like this:
 ```
 
 4. To test your project in development, navigate to the root directory of your project on the command line and run `npm run serve`. This is the command you should use, from now on, to test your project and have the page hot reload after small changes without having to rebuild.
-5. You should verify that hot reloading is enabled by running `npm run serve`, waiting for a browser window to open up at `localhost:8080` (or opening it up yourself), and verifying that the browser console has the following output:
+5. You should verify that hot reloading is enabled by running `npm run serve`, waiting for a browser window to open up at `localhost:8080` (or opening it up yourself), and verifying that the browser bash has the following output:
 
-![A message in the browser console verifying that hot reloading is enabled](./images/hot_reloading.png)
+![A message in the browser bash verifying that hot reloading is enabled](./images/hot_reloading.png)
 
 ### TypeScript
 
@@ -815,7 +815,7 @@ In other words, TypeScript is a superset of JavaScript with optional static typi
 1. Run `npm install --save-dev typescript ts-loader` to install the TypeScript compiler and loader locally.
 2. Add the following lines to your `webpack.config.js` file:
 
-```
+```js
 entry: './src/main.ts',
 module: {
   rules: [
@@ -832,7 +832,7 @@ resolve: {
 
 The complete contents of `webpack.config.js` should now look something like this:
 
-```
+```js
 const path = require('path');
 
 module.exports = {
@@ -861,7 +861,7 @@ module.exports = {
 
 3. In the root directory, create a new file called tsconfig.json with the following contents:
 
-```
+```json
 {
     "compilerOptions": {
         "outDir": "./dist/",
@@ -878,7 +878,7 @@ module.exports = {
 
 Note that you might be getting errors when trying to compile `main.ts` because TypeScript is stricter than JavaScript. One change that you will probably have to make to the file is:
 
-```
+```ts
 // TypeScript doesn't like the inference you make here
 // const canvas = document.getElementById("webgl-canvas");
 // const gl = canvas.getContext("webgl2");
@@ -895,13 +895,13 @@ const gl = canvas.getContext("webgl2");
 
 One of the issues with Webpack is that the final JavaScript file it produces is minified and completely unreadable. This also means that it's impossible to debug it using the debugger built into your browser. [Source maps](https://firefox-source-docs.mozilla.org/devtools-user/debugger/how_to/use_a_source_map/index.html) are a neat way around this problem that allow you to debug the minified code (and I'm not going to pretend I understand how they work). What's even better is that they're super easy to set up. All you have to do is add the following line to your `webpack.config.js`:
 
-```
+```js
 devtool: 'eval-source-map',
 ```
 
 The complete contents of `webpack.config.js` should now look something like this:
 
-```
+```js
 const path = require('path');
 
 module.exports = {
@@ -933,13 +933,13 @@ After you set up your source map, you need to rebuild your project with `mode` s
 
 Keep in mind that if you're using both TypeScript and source maps in your Webpack project, you should add the following line to your `tsconfig.json`:
 
-```
+```json
 "sourceMap": true,
 ```
 
 The complete contents of `tsconfig.json` should now look something like this:
 
-```
+```json
 {
     "compilerOptions": {
         "outDir": "./dist/",
